@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phonics 小樂園</title>
+<title>Phonics Playground</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F5F9FF; --card:#FFFFFF; --ink:#1B2447; --mute:#5C6A8C; --line:#DCE5F5;
@@ -14,7 +14,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:Andika,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Andika,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-tap-highlight-color:transparent}
 button,a{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
 :focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:12px}
@@ -75,13 +75,40 @@ h2{font-size:1.15rem;font-weight:700;margin:14px 0 18px;color:var(--mute)}
 .res h2{color:var(--ink);font-size:1.6rem}
 @media (max-width:520px){header{padding:14px 16px}main{padding:4px 16px 40px}.grid{gap:14px}.blk{min-width:92px;height:92px;font-size:2.8rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+header{position:static}
+#nav{position:sticky;top:0;z-index:20;display:flex;gap:8px;overflow-x:auto;padding:10px 22px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);scrollbar-width:none;max-width:none}
+#nav::-webkit-scrollbar{display:none}
+#nav a{flex:none;text-decoration:none;font-weight:700;font-size:.95rem;padding:7px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);color:var(--ink)}
+#nav a:hover{border-color:var(--c,var(--ink))}
+#nav a.tut{background:var(--ink);color:#fff;border-color:var(--ink)}
+section{scroll-margin-top:64px;margin-top:44px}
+section>h2{font-size:1.6rem;color:var(--ink);margin:0 0 6px;padding-bottom:10px;border-bottom:3px solid var(--c)}
+.grp{margin-top:34px}
+.grp .words{margin-top:20px}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(27,36,71,.55);display:grid;place-items:center;padding:16px}
+.modal[hidden]{display:none}
+.mcard{position:relative;background:var(--card);border-radius:24px;padding:28px 22px;width:min(560px,100%);max-height:92vh;overflow:auto}
+.mx{position:absolute;top:10px;right:14px;font-size:2rem;line-height:1;color:var(--mute);padding:4px 10px;border-radius:12px}
+.blk.sm{font-size:1.7rem;height:auto;min-height:84px;padding:14px 22px}
+.tutor{--c:var(--ink);--on:#fff;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 24px;margin-bottom:40px}
+.tutor>h2{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.tutor .lead{color:var(--mute);margin:6px 0 14px}
+.tutor ul{margin:0 0 22px;padding-left:20px}
+.tutor li{margin:6px 0}
+@media (max-width:520px){#nav{padding:10px 16px}}
 </style>
 </head>
 <body>
-<header><h1 id="home" tabindex="0"><span class="logo" aria-hidden="true"><i style="background:#4F7CF0">a</i><i style="background:#FFB400;color:#1B2447">b</i><i style="background:#4DBB63">c</i></span>phonics 小樂園</h1><span class="stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 18l-6.4 3.6L7 14.5 1.7 9.5l7.2-.9z"/></svg><span id="stars">0</span></span></header>
+<header>
+  <h1 id="home" tabindex="0"><span class="logo" aria-hidden="true"><i style="background:#4F7CF0">a</i><i style="background:#FFB400;color:#1B2447">b</i><i style="background:#4DBB63">c</i></span>Phonics Playground</h1>
+  <span class="stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 18l-6.4 3.6L7 14.5 1.7 9.5l7.2-.9z"/></svg><span id="stars">0</span></span>
+</header>
+<nav id="nav" aria-label="Sections"></nav>
 <main id="app"></main>
+<div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-label="Quiz"><div class="mcard"><button id="mclose" class="mx" aria-label="Close">×</button><div id="mbody"></div></div></div>
 <script>
-/* ---------- 資料 ---------- */
+/* ---------- data ---------- */
 const VIDEO={a:'dVnJT8F3rFI',e:'AhJA3MGW2FM',i:'8wMwRCG3QbE',o:'cXMFlgiW7Zo',u:'YC_a-_3VCD8',b:'xuMizFxdnfI',c:'Z4NDHETxGhI',d:'CA9IA9pYa44',f:'2VZtN9KeM-g',g:'eJ3gXlPKeT0',h:'TnNCedIg3_A',j:'o1QF8YQQAR8',k:'C5c40GV5U5c',l:'1upGcitj83Y',m:'h3QfF5tU3nA',n:'0mvqLTyVcbc',p:'x4oYdz4FeXY',q:'T8Pe6yRBu0Q',r:'IYRPn9h5u3A',s:'xiAmNUlARpY',t:'vh_7x6KaKUY',v:'OnAk8UIbxo4',w:'sKko4QUvrqE',x:'EVFErSlW9Bk',y:'SY2v4JSE4ns',z:'zNJ8KsQwBYA'};
 const E={apple:'🍎',ant:'🐜',ax:'🪓',arrow:'🏹',actor:'🎭',actress:'👸',ankle:'🦶',anger:'😠',bed:'🛏️',book:'📖',box:'📦',banana:'🍌',bird:'🐦',boy:'👦',body:'🧍',bench:'🪑',cap:'🧢',car:'🚗',coffee:'☕',cat:'🐱',cow:'🐮',cake:'🎂',cup:'🥤',count:'🔢',desk:'🗄️',doctor:'🧑‍⚕️',deer:'🦌',duck:'🦆',doll:'🪆',dog:'🐶',dancer:'💃',door:'🚪',egg:'🥚',end:'🔚',elephant:'🐘',elf:'🧝',envelope:'✉️',echo:'📣',edge:'🔲',entrance:'🚪',food:'🍲',family:'👨‍👩‍👧',four:'4️⃣',foot:'🦶',five:'5️⃣',fence:'🚧',fork:'🍴',father:'👨',garden:'🌷',gift:'🎁',goat:'🐐',gate:'⛩️',goose:'🪿',golf:'⛳',girl:'👧',gold:'🥇',hat:'🎩',hen:'🐔',head:'🙂',home:'🏠',hand:'✋',hammer:'🔨',house:'🏡',horse:'🐴',igloo:'🧊',infant:'👶',ink:'🖋️',insect:'🐞',inch:'📏',itch:'🤭',jewel:'💎',jump:'🤸',jam:'🍓',jelly:'🍮',jacket:'🧥',jeep:'🚙',juice:'🧃',jar:'🫙',kite:'🪁',kangaroo:'🦘',kiss:'💋',kitchen:'🍳',key:'🔑',kettle:'🫖',king:'🤴',kick:'⚽',leg:'🦵',lemon:'🍋',lake:'🏞️','living room':'🛋️',leaf:'🍃',lips:'👄',lion:'🦁',light:'💡',monkey:'🐵',math:'➕',moon:'🌙',mother:'👩',milk:'🥛',mouth:'👄',map:'🗺️',man:'👨',net:'🥅',nail:'📌',nose:'👃',neck:'🧣',nest:'🪺',nurse:'🧑‍⚕️',number:'🔢',napkin:'🧻',ox:'🐂',on:'🔛',octopus:'🐙',ostrich:'🦤',operate:'🏥',October:'🍂',pants:'👖',pink:'🩷',park:'🌳',path:'🛤️',pig:'🐷',pear:'🍐',pencil:'✏️',pen:'🖊️',queen:'👑',quiet:'🤫',question:'❓',quilt:'🛌',quarrel:'😤',quarter:'🪙',rope:'🪢',ring:'💍',rock:'🪨',rug:'🟫',rainbow:'🌈',rooster:'🐓',rose:'🌹',rabbit:'🐰',sun:'☀️',sofa:'🛋️',soap:'🧼',six:'6️⃣',seven:'7️⃣',sign:'🪧',sink:'🚰',silver:'🥈',towel:'🧖',toe:'🦶',tie:'👔',table:'🪵',teacher:'🧑‍🏫',tea:'🍵',two:'2️⃣',ten:'🔟',umbrella:'☂️',uncle:'👨',up:'⬆️',vase:'🏺',veil:'👰',van:'🚐',violin:'🎻',vest:'🦺',village:'🏘️',wall:'🧱',window:'🪟',wind:'💨',watch:'⌚',word:'🔤',wash:'🫧',woman:'👩',walkman:'🎧','X-ray':'🩻',yard:'🏡',yacht:'⛵',year:'🎆',yam:'🍠',yellow:'💛','yo-yo':'🪀',zero:'0️⃣',zipper:'🤐',zoo:'🦓',zebra:'🦓',
 mat:'🟫',bag:'👜',fan:'🪭',bat:'🏏',well:'⛲',red:'🔴',bell:'🔔',lick:'👅',bib:'🍼',pin:'📍',hill:'⛰️',sock:'🧦',bus:'🚌',nut:'🥜',cape:'🦸',name:'📛',tape:'📼',these:'👉',bite:'😋',cube:'🧊',June:'📅',tube:'🧪',
@@ -92,7 +119,7 @@ porch:'🏡',pork:'🥓',horn:'📯',fort:'🏰',morning:'🌅',corn:'🌽',arm:
 black:'⚫',blocks:'🧱',blouse:'👚',bloom:'🌼',bleach:'🧴','blonde hair':'👱‍♀️',flat:'➖',flu:'🤧',flame:'🔥',flute:'🎶',floor:'🪵',flag:'🏁',plane:'✈️',play:'🛝',plus:'➕',planet:'🪐',platform:'🚉',plum:'🍑',plate:'🍽️',plant:'🌱',clock:'🕐',cloud:'☁️',clean:'✨',clay:'🏺',climb:'🧗',close:'🚪',clap:'👏',glove:'🧤',globe:'🌍',glass:'🥛',glasses:'👓',glider:'🪂',crab:'🦀',cream:'🍦',crow:'🐦‍⬛',crayon:'🖍️',crocodile:'🐊',croissant:'🥐',gray:'🩶',green:'🟢',grass:'🌱',grapes:'🍇',ground:'🌍',grow:'🌻',grandma:'👵',prize:'🏆',price:'🏷️',prawn:'🦐',press:'👇',prince:'🤴',princess:'👸',pray:'🙏',bright:'💡',brook:'🏞️',brim:'🎩',bride:'👰',bread:'🍞',brick:'🧱',frog:'🐸',frost:'❄️',Friday:'📅','French fries':'🍟',front:'⬆️',friend:'🧑‍🤝‍🧑',frame:'🖼️',tractor:'🚜',truck:'🚚',train:'🚆',tray:'🍽️',tree:'🌳',triangle:'🔺',trunk:'🪵',dream:'💭',drum:'🥁',drop:'💧',drive:'🚗',dress:'👗',drink:'🥤',smile:'😊',small:'🤏',smell:'👃',smoke:'💨',smooth:'🧈',snowman:'⛄',snow:'❄️',snore:'😴',snake:'🐍',snail:'🐌',sneakers:'👟',sneeze:'🤧',snack:'🍪',slow:'🐢',slap:'👋',sleep:'😴',slide:'🛝',slope:'📉',sled:'🛷',switch:'🔘',swallow:'🐦',swan:'🦢',swim:'🏊',sweet:'🍰',swing:'🎠',spider:'🕷️',spaceship:'🚀',spinach:'🥬',spell:'🔤',stockings:'🧦',store:'🏪',star:'⭐',stamp:'📮',storm:'⛈️',stick:'🌿',student:'🧑‍🎓',stand:'🧍',scarf:'🧣',scooter:'🛵',scanner:'🖨️',scarecrow:'🎃',scale:'⚖️',scorpion:'🦂',scoop:'🍨',skunk:'🦨',skis:'🎿',skirt:'👗',skates:'⛸️',
 beach:'🏖️',lunch:'🍱',cheese:'🧀',church:'⛪',chicken:'🍗',chair:'🪑',cherry:'🍒',sheep:'🐑',shirt:'👕',ship:'🚢',fish:'🐟',dish:'🍽️',push:'🫸',shoes:'👟',shovel:'🪏',whale:'🐋',white:'⚪',wheel:'🛞',wheat:'🌾',whip:'➰',whistle:'🎵',wheelchair:'♿',whisper:'🤫',photo:'📷',telephone:'☎️',trophy:'🏆',pharmacy:'💊',alphabet:'🔤',thumb:'👍',three:'3️⃣',bathmat:'🟩',thirsty:'🥵',thief:'🦹',bath:'🛁',knob:'🔘',knee:'🦵',knife:'🔪',knock:'✊',knit:'🧶',wrist:'⌚',wrinkle:'👴',wrap:'🎁',wreath:'💐',write:'✍️',lamb:'🐑',comb:'🪮',crumb:'🍞',numb:'🥶',call:'📞',tall:'🦒',fall:'🍂',ball:'⚽',dew:'💧',few:'🤏',view:'🏞️',hew:'🪓',new:'🆕',nephew:'👦',newspaper:'📰'};
 const raw=`
-letters|Aa|字母與發音|#4F7CF0
+consonants|b|Consonants|#4F7CF0
 Aa|apple ankle ax ant arrow anger actor actress
 Bb|bed book bench box banana bird body boy
 Cc|cap count car coffee cat cow cake cup
@@ -119,19 +146,19 @@ Ww|wall window walkman wind watch word wash woman
 Xx|ax X-ray box
 Yy|yard yacht year yam yellow yo-yo
 Zz|zero zipper zoo zebra
-short|a|短母音|#17B7A0
+short|a|Short Vowels|#17B7A0
 Aa|mat map bag cat hat fan bat apple
 Ee|egg well red pen net hen bed bell
 Ii|lick six bib pig pin kiss ink hill
 Oo|ox on octopus box sock operate ostrich
 Uu|sun umbrella cup bus nut uncle under
-magic|a_e|魔法 E|#9B7BEA
+magic|a_e|Magic E|#9B7BEA
 a_e|cape name tape
 e_e|these
 i_e|bite five kite
 o_e|rope rose nose
 u_e|cube June tube
-long|ai|長母音|#4DBB63
+long|ai|Long Vowels|#4DBB63
 ai|tail rain paint pain jail rail nail maid
 ay|bay ray way say hay pay May lay
 ee|reeds eel bee peel jeep feet see teeth
@@ -143,28 +170,28 @@ oa|road toast toad coal goat boat coat soap
 ow|rainbow pillow yellow window bowl row hollow low
 ui|suit juice fruit
 ue|blue glue Sue
-y (長i)|sky fly dry spy type shy cry my
-y (長e)|rainy sunny puppy dizzy dirty pony happy baby
-dipht|ou|雙母音|#FFC83D
+y (long i)|sky fly dry spy type shy cry my
+y (long e)|rainy sunny puppy dizzy dirty pony happy baby
+dipht|ou|Diphthongs|#FFC83D
 ou|house out mouth count fountain mountain shout mouse
 ow|cow towel clown owl crown brown flower tower
 oi|coin oil point noise boil soil coil
 oy|oyster boy cowboy soy toy
-vdig|au|母音組合|#F0638A
+vdig|au|Vowel Digraphs|#F0638A
 au|August sauce sausage naughty autumn applause
 aw|paw draw saw straw strawberry lawn
-oo (長)|moon zoo roof rooster boots food spoon room
-oo (短)|book woods cookie wool foot cook hook look
-ea (短)|head sweater sweat pear lead bear leather feather
+oo (long)|moon zoo roof rooster boots food spoon room
+oo (short)|book woods cookie wool foot cook hook look
+ea (short)|head sweater sweat pear lead bear leather feather
 all|call tall fall ball wall
 ew|dew few view hew new nephew newspaper
-rv|ar|R 控制母音|#FF8A4C
+rv|ar|R-Controlled Vowels|#FF8A4C
 or|porch pork horse horn fort morning corn fork
 ar|arm car armchair card cart farm park garden
 ur|turtle surfing turkey fur hurt purse nurse
 er|sister brother under rooster winter mermaid marker mother
 ir|birthday circus dirty bird circle dirt girl
-blend|bl|子音組合 Blends|#2CB1EA
+blend|bl|Blends|#2CB1EA
 bl|blue black blocks blouse bloom bleach blanket blonde_hair
 fl|flat flu fly flame flute floor flag flower
 pl|plane play plus planet platform plum plate plant
@@ -185,25 +212,30 @@ sp|spider spaceship spinach spoon spell
 st|stockings store star stamp storm stick student stand
 sc|scarf scooter scanner scarecrow scale scorpion scoop
 sk|skunk skis skirt skates
-cdig|ch|子音雙字母|#9ACD32
+cdig|ch|Consonant Digraphs|#9ACD32
 ch|beach lunch cheese bench church chicken chair cherry
 sh|sheep shirt ship fish dish push shoes shovel
 wh|whale white wheel wheat whip whistle wheelchair whisper
 ph|photo elephant telephone trophy pharmacy alphabet
-th (有聲)|brother feather leather father mother
-th (無聲)|thumb three bathmat thirsty thief bath mouth teeth
-kn (k 不發音)|knob knee knife knock knit
-wr (w 不發音)|wrist wrinkle wrap wreath write
-mb (b 不發音)|thumb lamb comb crumb numb`;
+th (voiced)|brother feather leather father mother
+th (unvoiced)|thumb three bathmat thirsty thief bath mouth teeth
+kn (silent k)|knob knee knife knock knit
+wr (silent w)|wrist wrinkle wrap wreath write
+mb (silent b)|thumb lamb comb crumb numb`;
 const UNITS=[];
 raw.trim().split('\n').forEach(l=>{const p=l.split('|');
   if(p.length==4){UNITS.push({id:p[0],icon:p[1],name:p[2],color:p[3],items:[]});}
   else{const w=p[1].split(' ').map(x=>x.replace(/_/g,' '));UNITS.at(-1).items.push({p:p[0],words:w});}});
-UNITS.find(u=>u.id=='letters').items.forEach(i=>i.video=VIDEO[i.p[0].toLowerCase()]);
+(function(){const c=UNITS.find(u=>u.id=='consonants');
+  const V=['Aa','Ee','Ii','Oo','Uu'];
+  const vow={id:'vowels',icon:'a',name:'Vowels: A E I O U',color:'#E8744F',items:c.items.filter(i=>V.includes(i.p))};
+  c.items=c.items.filter(i=>!V.includes(i.p));
+  UNITS.splice(1,0,vow);
+  [c,vow].forEach(u=>u.items.forEach(i=>i.video=VIDEO[i.p[0].toLowerCase()]));})();
 UNITS.find(u=>u.id=='short').items.forEach(i=>i.video=VIDEO[i.p[0].toLowerCase()]);
 const ALL=[...new Set(UNITS.flatMap(u=>u.items.flatMap(i=>i.words)))];
 
-/* ---------- 工具 ---------- */
+/* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
 const app=$('#app');
 function say(t,rate=.8){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=rate;speechSynthesis.speak(u);}catch(e){}}
@@ -218,49 +250,15 @@ function hl(word,pat){
   return i<0?word:word.slice(0,i)+'<b>'+word.slice(i,i+key.length)+'</b>'+word.slice(i+key.length);
 }
 
-/* ---------- 畫面 ---------- */
+/* ---------- view ---------- */
 function onc(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (0.299*r+0.587*g+0.114*b)>165?'#1B2447':'#fff'}
 const LNAME={a:'ay',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'jee',h:'aitch',i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'are',s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
-const LSOUND={a:'ah',b:'buh',c:'kuh',d:'duh',e:'eh',f:'fuh',g:'guh',h:'huh',i:'ih',j:'juh',k:'kuh',l:'luh',m:'muh',n:'nuh',o:'aw',p:'puh',q:'kwuh',r:'ruh',s:'suh',t:'tuh',u:'uh',v:'vuh',w:'wuh',x:'ksuh',y:'yuh',z:'zuh'};
-const PSOUND={ai:'ay',ay:'ay',ee:'ee',ea:'ee',ey:'ee',ie:'eye',igh:'eye',oa:'oh',ui:'oo',ue:'oo',au:'aw',aw:'aw',oi:'oy',oy:'oy',ou:'ow',or:'or',ar:'ar',ur:'er',er:'er',ir:'er',ch:'chuh',sh:'shuh',th:'thuh',wh:'wuh',ph:'fuh',kn:'nuh',wr:'ruh',mb:'muh'};
-function sayList(list,gap=450){try{speechSynthesis.cancel();list.forEach(([t,r])=>{const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=r||.7;speechSynthesis.speak(u);});}catch(e){}}
-function sayBlock(it,unitId){
-  const k=it.p.split(' ')[0].toLowerCase().replace(/[^a-z]/g,'');
-  const letters=(unitId=='letters')?[k[0]]:k.split('');
-  sayList(letters.map(c=>[LNAME[c],.7]));
-}
+function sayLetter(it){const c=it.p[0].toLowerCase();say(LNAME[c],.7)}
 function pic(w){return `<img src="img/${w.toLowerCase().replace(/ /g,'_')}.jpg" alt="${w}" loading="lazy">`}
 const SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
 const PLAY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
-function home(){
-  updStars();
-  app.innerHTML='<h2>選一個主題開始玩</h2><div class="grid">'+UNITS.map((u,i)=>`<button class="unit" style="--c:${u.color};--on:${onc(u.color)}" data-u="${i}"><span class="g">${u.icon.replace('_','·')}</span><span><span class="n">${u.name}</span><small>${u.items.length} 組</small></span></button>`).join('')+'</div>';
-  app.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>unit(+b.dataset.u,0));
-}
-function unit(ui,ii){
-  const u=UNITS[ui],it=u.items[ii];
-  updStars();
-  app.innerHTML=`<button class="back" id="bk">‹ 回主題</button>
-  <h2>${u.name}</h2>
-  <div class="stage" style="--c:${u.color};--on:${onc(u.color)}">
-    <div class="chips">${u.items.map((x,k)=>`<button class="chip ${k==ii?'on':''}" data-k="${k}">${x.p}</button>`).join('')}</div>
-    <div class="head">${u.id=='letters'?`<button class="blk" id="blk" aria-label="聽字母怎麼唸">${it.p}</button>`:`<div class="blk nb">${it.p.replace('_','·')}</div>`}
-      <div class="acts">
-        <button class="btn fill" id="sp">${SPK}聽單字</button>
-        <button class="btn" id="qz">小測驗</button>
-        ${it.video?`<a class="btn" href="https://www.youtube.com/shorts/${it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks 影片</a>`:''}
-      </div>
-    </div>
-    ${u.id=='letters'?'<p class="hint">點上面的方塊,聽字母怎麼唸</p>':''}
-    <div class="words">${it.words.map(w=>`<button class="w" data-w="${w}"><span class="e">${pic(w)}</span><span class="t">${hl(w,it.p)}</span></button>`).join('')}</div>
-  </div>`;
-  $('#bk').onclick=home;
-  app.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>unit(ui,+b.dataset.k));
-  app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>say(b.dataset.w));
-  $('#sp').onclick=()=>{let k=0;const go=()=>{if(k>=it.words.length)return;const w=it.words[k++];say(w);setTimeout(go,1300)};go();};
-  $('#qz').onclick=()=>quiz(ui,ii);
-  if(u.id=='letters')$('#blk').onclick=()=>sayBlock(it,u.id);
-}
+const TUTOR_EMAIL='chi.chin0929@gmail.com';
+
 function lev(a,b){a=a.toLowerCase();b=b.toLowerCase();const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;
   for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[a.length][b.length]}
 function similar(w){
@@ -269,32 +267,80 @@ function similar(w){
     .map(x=>({x,score:lev(w,x)+Math.random()*1.2})).sort((a,b)=>a.score-b.score);
   return pool.slice(0,2).map(o=>o.x);
 }
-function quiz(ui,ii){
-  const u=UNITS[ui],it=u.items[ii];
+
+/* ---------- page ---------- */
+function build(){
+  $('#nav').innerHTML=UNITS.map(u=>`<a href="#s-${u.id}" style="--c:${u.color}">${u.name.replace(': A E I O U','')}</a>`).join('')+'<a href="#tutoring" class="tut">Tutoring</a>';
+  app.innerHTML=UNITS.map((u,ui)=>`
+  <section id="s-${u.id}" style="--c:${u.color};--on:${onc(u.color)}">
+    <h2>${u.name}</h2>
+    ${u.items.map((it,ii)=>`
+    <article class="grp">
+      <div class="head">
+        ${u.id=='consonants'?`<button class="blk" data-letter="${ui}:${ii}" aria-label="Hear the letter name">${it.p}</button>`:`<div class="blk nb${it.p.length>4?' sm':''}">${it.p.replace('_','·')}</div>`}
+        <div class="acts">
+          <button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear words</button>
+          <button class="btn" data-quiz="${ui}:${ii}">Quiz</button>
+          ${it.video?`<a class="btn" href="https://www.youtube.com/shorts/${it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks video</a>`:''}
+        </div>
+      </div>
+      <div class="words">${it.words.map(w=>`<button class="w" data-w="${w}"><span class="e">${pic(w)}</span><span class="t">${hl(w,it.p)}</span></button>`).join('')}</div>
+    </article>`).join('')}
+  </section>`).join('')+`
+  <section id="tutoring" class="tutor">
+    <h2>Private English Tutoring</h2>
+    <p class="lead">One-on-one lessons with Tr. Jasmine.</p>
+    <ul>
+      <li>GEPT (General English Proficiency Test)</li>
+      <li>Elementary school, junior high and senior high entrance exams</li>
+      <li>TOEFL</li>
+      <li>IELTS</li>
+    </ul>
+    <a class="btn fill" href="mailto:${TUTOR_EMAIL}">Email: ${TUTOR_EMAIL}</a>
+  </section>`;
+}
+app.addEventListener('click',e=>{
+  const t=e.target.closest('[data-w],[data-hear],[data-quiz],[data-letter]');if(!t)return;
+  const get=k=>{const [u,i]=t.dataset[k].split(':').map(Number);return [UNITS[u],UNITS[u].items[i]]};
+  if(t.dataset.w)say(t.dataset.w);
+  else if(t.dataset.letter){const [,it]=get('letter');sayLetter(it)}
+  else if(t.dataset.hear){const [,it]=get('hear');let k=0;const go=()=>{if(k>=it.words.length)return;say(it.words[k++]);setTimeout(go,1300)};go()}
+  else if(t.dataset.quiz){const [u,it]=get('quiz');quiz(u,it)}
+});
+
+/* ---------- quiz (popup) ---------- */
+const modal=$('#modal'),mbody=$('#mbody');
+function closeQuiz(){modal.hidden=true;mbody.innerHTML='';try{speechSynthesis.cancel()}catch(e){}document.body.style.overflow=''}
+$('#mclose').onclick=closeQuiz;
+modal.addEventListener('click',e=>{if(e.target===modal)closeQuiz()});
+document.addEventListener('keydown',e=>{if(e.key=='Escape'&&!modal.hidden)closeQuiz()});
+function quiz(u,it){
+  modal.hidden=false;document.body.style.overflow='hidden';
+  modal.style.setProperty('--c',u.color);modal.style.setProperty('--on',onc(u.color));
   const qs=shuffle(it.words).slice(0,5);let n=0,score=0,locked=false;
   const show=()=>{
     if(n>=qs.length){
       const s=store.get(),key=u.id+':'+it.p;s[key]=Math.max(s[key]||0,score);store.set(s);updStars();
-      app.innerHTML=`<div class="q res" style="--c:${u.color};--on:${onc(u.color)}"><h2>${score>=4?'太棒了!':'再玩一次會更好'}</h2><div class="big">${'★'.repeat(score)||'·'}</div><p>答對 ${score} / ${qs.length}</p>
-      <div class="acts" style="justify-content:center;margin-top:24px"><button class="btn fill" id="again">再玩一次</button><button class="btn" id="bk2">回單字</button></div></div>`;
-      $('#again').onclick=()=>quiz(ui,ii);$('#bk2').onclick=()=>unit(ui,ii);return;}
+      mbody.innerHTML=`<div class="q res"><h2>${score>=4?'Great job!':'Keep practicing!'}</h2><div class="big">${'★'.repeat(score)||'·'}</div><p>Score ${score} / ${qs.length}</p>
+      <div class="acts" style="justify-content:center;margin-top:24px"><button class="btn fill" id="again">Play again</button><button class="btn" id="done">Close</button></div></div>`;
+      $('#again').onclick=()=>quiz(u,it);$('#done').onclick=closeQuiz;return;}
     const w=qs[n];
     const opts=shuffle([w,...similar(w)]);
-    app.innerHTML=`<button class="back" id="bk">‹ 回單字</button><div class="q"><div class="cnt">第 ${n+1} / ${qs.length} 題 ・ ${it.p.replace('_','·')}</div>
-      <button class="hear" id="hear" aria-label="再聽一次">${SPK}</button><p>聽聽看,選出正確的字</p>
+    mbody.innerHTML=`<div class="q"><div class="cnt">Question ${n+1} / ${qs.length} · ${it.p.replace('_','·')}</div>
+      <button class="hear" id="hear" aria-label="Hear again">${SPK}</button><p>Listen and choose the word</p>
       <div class="opts">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div><div class="msg" id="msg"></div></div>`;
-    $('#bk').onclick=()=>unit(ui,ii);
     $('#hear').onclick=()=>say(w);setTimeout(()=>say(w),300);locked=false;
-    app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    mbody.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
       if(locked)return;
-      if(b.dataset.o==w){locked=true;b.classList.add('ok');score++;$('#msg').textContent='答對了!';say(w);setTimeout(()=>{n++;show()},1200);}
-      else{b.classList.add('no');$('#msg').textContent='再聽一次,加油!';say(w);}
+      if(b.dataset.o==w){locked=true;b.classList.add('ok');score++;$('#msg').textContent='Correct!';say(w);setTimeout(()=>{n++;show()},1200);}
+      else{b.classList.add('no');$('#msg').textContent='Try again!';say(w);}
     });
   };
   show();
 }
-$('#home').onclick=home;$('#home').onkeydown=e=>{if(e.key=='Enter')home()};
-home();
+$('#home').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+$('#home').onkeydown=e=>{if(e.key=='Enter')window.scrollTo({top:0,behavior:'smooth'})};
+build();updStars();
 </script>
 </body>
 </html>
