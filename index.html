@@ -253,7 +253,15 @@ function hl(word,pat){
 /* ---------- view ---------- */
 function onc(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (0.299*r+0.587*g+0.114*b)>165?'#1B2447':'#fff'}
 const LNAME={a:'ay',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'jee',h:'aitch',i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'are',s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
-function sayLetter(it){const c=it.p[0].toLowerCase();say(LNAME[c],.7)}
+const isLetterGroup=it=>/^[A-Z][a-z]$/.test(it.p);
+const letterAudio={};let curAudio=null;
+function playLetter(it){
+  const c=it.p[0].toLowerCase();
+  try{speechSynthesis.cancel()}catch(e){}
+  if(curAudio){curAudio.pause();curAudio.currentTime=0}
+  const a=letterAudio[c]||(letterAudio[c]=new Audio(`audio/${c}.mp3`));
+  curAudio=a;a.currentTime=0;a.play().catch(()=>{});
+}
 function pic(w){return `<img src="img/${w.toLowerCase().replace(/ /g,'_')}.jpg" alt="${w}" loading="lazy">`}
 const SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
 const PLAY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
@@ -277,9 +285,9 @@ function build(){
     ${u.items.map((it,ii)=>`
     <article class="grp">
       <div class="head">
-        ${u.id=='consonants'?`<button class="blk" data-letter="${ui}:${ii}" aria-label="Hear the letter name">${it.p}</button>`:`<div class="blk nb${it.p.length>4?' sm':''}">${it.p.replace('_','·')}</div>`}
+        ${isLetterGroup(it)?`<button class="blk" data-letter="${ui}:${ii}" aria-label="Hear the letter sound">${it.p}</button>`:`<div class="blk nb${it.p.length>4?' sm':''}">${it.p.replace('_','·')}</div>`}
         <div class="acts">
-          <button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear words</button>
+          ${isLetterGroup(it)?`<button class="btn fill" data-letter="${ui}:${ii}">${SPK}Hear letters</button>`:`<button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear words</button>`}
           <button class="btn" data-quiz="${ui}:${ii}">Quiz</button>
           ${it.video?`<a class="btn" href="https://www.youtube.com/shorts/${it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks video</a>`:''}
         </div>
@@ -302,7 +310,7 @@ app.addEventListener('click',e=>{
   const t=e.target.closest('[data-w],[data-hear],[data-quiz],[data-letter]');if(!t)return;
   const get=k=>{const [u,i]=t.dataset[k].split(':').map(Number);return [UNITS[u],UNITS[u].items[i]]};
   if(t.dataset.w)say(t.dataset.w);
-  else if(t.dataset.letter){const [,it]=get('letter');sayLetter(it)}
+  else if(t.dataset.letter){const [,it]=get('letter');playLetter(it)}
   else if(t.dataset.hear){const [,it]=get('hear');let k=0;const go=()=>{if(k>=it.words.length)return;say(it.words[k++]);setTimeout(go,1300)};go()}
   else if(t.dataset.quiz){const [u,it]=get('quiz');quiz(u,it)}
 });
