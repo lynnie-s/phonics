@@ -294,7 +294,7 @@ function build(){
       <div class="head">
         ${isLetterGroup(it)?`<button class="blk" data-letter="${ui}:${ii}" aria-label="Hear the letter sound">${it.p}</button>`:`<div class="blk nb${it.p.length>4?' sm':''}">${it.p.replace('_','·')}</div>`}
         <div class="acts">
-          ${isLetterGroup(it)?`<button class="btn fill" data-letter="${ui}:${ii}">${SPK}Hear letters</button>`:`<button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear words</button>`}
+          ${isLetterGroup(it)?`<button class="btn fill" data-letter="${ui}:${ii}">${SPK}Hear letters</button>`:`<button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear letters</button>`}
           <button class="btn" data-quiz="${ui}:${ii}">Quiz</button>
           ${it.ext?`<a class="btn" href="${it.ext}" target="_blank" rel="noopener">${SPK}Hear the sound</a>`:''}
           ${it.video?`<a class="btn" href="https://www.youtube.com/shorts/${it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks video</a>`:''}
