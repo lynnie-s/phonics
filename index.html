@@ -280,7 +280,7 @@ function similar(w){
 
 /* ---------- page ---------- */
 function build(){
-  $('#nav').innerHTML=UNITS.map(u=>`<a href="#s-${u.id}" style="--c:${u.color}">${u.name.replace(': A E I O U','')}</a>`).join('')+'<a href="#experience" class="tut">About</a><a href="#tutoring" class="tut">Tutoring</a>';
+  $('#nav').innerHTML=UNITS.map(u=>`<a href="#s-${u.id}" style="--c:${u.color}">${u.name.replace(': A E I O U','')}</a>`).join('')+'<a href="#tutoring" class="tut">Tutoring</a><a href="#experience" class="tut">Experience</a>';
   app.innerHTML=UNITS.map((u,ui)=>`
   <section id="s-${u.id}" style="--c:${u.color};--on:${onc(u.color)}">
     <h2>${u.name}</h2>
@@ -298,13 +298,6 @@ function build(){
       <div class="words">${it.words.map(w=>`<button class="w" data-w="${w}"><span class="e">${pic(w)}</span><span class="t">${hl(w,it.p)}</span></button>`).join('')}</div>
     </article>`).join('')}
   </section>`).join('')+`
-  <section id="experience" class="tutor">
-    <h2 lang="zh-Hant">關於 Tr. Jasmine</h2>
-    <ul lang="zh-Hant">
-      <li>參與雙語教育研究計畫</li>
-      <li>英國碩士畢業</li>
-    </ul>
-  </section>
   <section id="tutoring" class="tutor">
     <h2>Private English Tutoring</h2>
     <ul>
@@ -314,6 +307,13 @@ function build(){
       <li>IELTS</li>
     </ul>
     <a class="btn fill" href="mailto:${TUTOR_EMAIL}">Email: ${TUTOR_EMAIL}</a>
+  </section>
+  <section id="experience" class="tutor">
+    <h2>Experience</h2>
+    <ul lang="zh-Hant">
+      <li>參與雙語教育研究計畫</li>
+      <li>英國碩士畢業</li>
+    </ul>
   </section>`;
 }
 app.addEventListener('click',e=>{
