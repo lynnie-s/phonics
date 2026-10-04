@@ -93,6 +93,11 @@ section>h2{font-size:1.6rem;color:var(--ink);margin:0 0 6px;padding-bottom:10px;
 .blk.sm{font-size:1.7rem;height:auto;min-height:84px;padding:14px 22px}
 .tutor{--c:var(--ink);--on:#fff;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 24px;margin-bottom:40px}
 .tutor>h2{border-bottom:0;margin-bottom:14px;padding-bottom:0}
+.tutor h3{font-size:.8rem;letter-spacing:.12em;color:var(--mute);margin:22px 0 10px;font-weight:700}
+.tutor h3:first-of-type{margin-top:0}
+.tutor ul.tags{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
+.tutor ul.tags li{margin:0;padding:8px 16px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:600}
+.tutor ul.exp{margin:0}
 .tutor .lead{color:var(--mute);margin:6px 0 14px}
 .tutor ul{margin:0 0 22px;padding-left:20px}
 .tutor li{margin:6px 0}
@@ -280,7 +285,7 @@ function similar(w){
 
 /* ---------- page ---------- */
 function build(){
-  $('#nav').innerHTML=UNITS.map(u=>`<a href="#s-${u.id}" style="--c:${u.color}">${u.name.replace(': A E I O U','')}</a>`).join('')+'<a href="#tutoring" class="tut">Tutoring</a><a href="#experience" class="tut">Experience</a>';
+  $('#nav').innerHTML=UNITS.map(u=>`<a href="#s-${u.id}" style="--c:${u.color}">${u.name.replace(': A E I O U','')}</a>`).join('')+'<a href="#tutoring" class="tut" lang="zh-Hant">家教與經歷</a>';
   app.innerHTML=UNITS.map((u,ui)=>`
   <section id="s-${u.id}" style="--c:${u.color};--on:${onc(u.color)}">
     <h2>${u.name}</h2>
@@ -298,22 +303,22 @@ function build(){
       <div class="words">${it.words.map(w=>`<button class="w" data-w="${w}"><span class="e">${pic(w)}</span><span class="t">${hl(w,it.p)}</span></button>`).join('')}</div>
     </article>`).join('')}
   </section>`).join('')+`
-  <section id="tutoring" class="tutor">
-    <h2>Private English Tutoring</h2>
-    <ul>
-      <li>GEPT (General English Proficiency Test)</li>
-      <li>Elementary school, junior high and senior high entrance exams</li>
-      <li>TOEFL</li>
-      <li>IELTS</li>
+  <section id="tutoring" class="tutor" lang="zh-Hant">
+    <h2>Tr. Jasmine 英文家教</h2>
+    <h3>課程項目</h3>
+    <ul class="tags">
+      <li>全民英檢</li>
+      <li>國小、國中、高中升學考</li>
+      <li>托福</li>
+      <li>雅思</li>
     </ul>
-    <a class="btn fill" href="mailto:${TUTOR_EMAIL}">Email: ${TUTOR_EMAIL}</a>
-  </section>
-  <section id="experience" class="tutor">
-    <h2>Experience</h2>
-    <ul lang="zh-Hant">
+    <h3>經歷</h3>
+    <ul class="exp">
       <li>參與雙語教育研究計畫</li>
       <li>英國碩士畢業</li>
     </ul>
+    <h3>聯絡方式</h3>
+    <a class="btn fill" href="mailto:${TUTOR_EMAIL}">Email：${TUTOR_EMAIL}</a>
   </section>`;
 }
 app.addEventListener('click',e=>{
