@@ -249,7 +249,8 @@ const M='smIm5oEsnck',A='ACz33PXppcc',G='GHpyJ5svbgM';
 const PV={'magic:a_e':YT('TlkE8ivmrpY'),'magic:e_e':YT(M,7),'magic:u_e':YT(M,7),'magic:o_e':YT(M,218),'magic:i_e':YT(M,255),
 'long:ee':'https://www.youtube.com/shorts/BAPcOjAtYfU','long:oa':YT(M,126),'long:igh':YT(M,358),'long:ie':YT(M,382),'long:ea':YT(M,827),'long:ay':YT(M,979),'long:ai':YT(M,1019),
 'dipht:oy':YT(A,3),'dipht:ow':YT(A,345),'vdig:aw':YT(G,18),'vdig:au':YT(G,136),'vdig:oo (long)':YT(A,151),'vdig:oo (short)':YT(A,151),
-'cdig:wh':YT(M,540),'cdig:ph':YT(M,540)};
+'cdig:wh':YT(M,540),'cdig:ph':YT(M,540),'long:ow':YT(A,345),'dipht:ou':YT('sVU-4dN-wHg',133),
+'cdig:ch':YT('YjQFOACQdms',29),'cdig:sh':YT('YjQFOACQdms',39),'cdig:th (voiced)':YT('YjQFOACQdms',778),'cdig:th (unvoiced)':YT('YjQFOACQdms',778)};
 UNITS.forEach(u=>u.items.forEach(i=>{const v=PV[u.id+':'+i.p];if(v)i.vurl=v}));
 const SC_URL='https://www.soundcityreading.net/more-letter-sounds---sh-th-ch-ng-oi-oy-ou-ow.html';
 UNITS.forEach(u=>{if(u.id=='dipht'||u.id=='cdig')u.items.forEach(i=>{if(/^(ou|ow|oi|oy|ch|sh|th)\b/.test(i.p))i.ext=SC_URL})});
