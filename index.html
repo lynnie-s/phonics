@@ -244,14 +244,38 @@ raw.trim().split('\n').forEach(l=>{const p=l.split('|');
   UNITS.splice(1,0,vow);
   [c,vow].forEach(u=>u.items.forEach(i=>i.video=VIDEO[i.p[0].toLowerCase()]));})();
 UNITS.find(u=>u.id=='short').items.forEach(i=>i.video=VIDEO[i.p[0].toLowerCase()]);
+const YT=(id,t)=>`https://youtu.be/${id}${t?`?t=${t}`:''}`;
+const M='smIm5oEsnck',A='ACz33PXppcc',G='GHpyJ5svbgM';
+const PV={'magic:a_e':YT('TlkE8ivmrpY'),'magic:e_e':YT(M,7),'magic:u_e':YT(M,7),'magic:o_e':YT(M,218),'magic:i_e':YT(M,255),
+'long:ee':'https://www.youtube.com/shorts/BAPcOjAtYfU','long:oa':YT(M,126),'long:igh':YT(M,358),'long:ie':YT(M,382),'long:ea':YT(M,827),'long:ay':YT(M,979),'long:ai':YT(M,1019),
+'dipht:oy':YT(A,3),'dipht:ow':YT(A,345),'vdig:aw':YT(G,18),'vdig:au':YT(G,136),'vdig:oo (long)':YT(A,151),'vdig:oo (short)':YT(A,151),
+'cdig:wh':YT(M,540),'cdig:ph':YT(M,540)};
+UNITS.forEach(u=>u.items.forEach(i=>{const v=PV[u.id+':'+i.p];if(v)i.vurl=v}));
 const SC_URL='https://www.soundcityreading.net/more-letter-sounds---sh-th-ch-ng-oi-oy-ou-ow.html';
 UNITS.forEach(u=>{if(u.id=='dipht'||u.id=='cdig')u.items.forEach(i=>{if(/^(ou|ow|oi|oy|ch|sh|th)\b/.test(i.p))i.ext=SC_URL})});
+const CL={'magic:a_e':'a_long','magic:e_e':'e_long','magic:i_e':'i_long','magic:o_e':'o_long','magic:u_e':'u_long',
+'long:ai':'a_long','long:ay':'a_long','long:ee':'e_long','long:ea':'e_long','long:ey':'e_long','long:y (long e)':'e_long','long:ie':'i_long','long:igh':'i_long','long:y (long i)':'i_long','long:oa':'o_long','long:ow':'o_long',
+'dipht:ou':'ou','dipht:ow':'ow','dipht:oi':'oi','dipht:oy':'oy','vdig:au':'aw','vdig:aw':'aw','vdig:oo (short)':'oo_short',
+'cdig:ch':'ch','cdig:sh':'sh','cdig:th (voiced)':'th_voiced','cdig:th (unvoiced)':'th_unvoiced'};
+UNITS.forEach(u=>u.items.forEach(i=>{const c=CL[u.id+':'+i.p];if(c){i.clip=c;delete i.ext}}));
 const ALL=[...new Set(UNITS.flatMap(u=>u.items.flatMap(i=>i.words)))];
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
 const app=$('#app');
-function say(t,rate=.8){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=rate;speechSynthesis.speak(u);}catch(e){}}
+let VOICE=null;
+function pickVoice(){
+  let vs=[];try{vs=speechSynthesis.getVoices()}catch(e){}
+  if(!vs.length)return;
+  const en=vs.filter(v=>/^en[-_]/i.test(v.lang));
+  const female=/aria|jenny|ava|emma|michelle|ana\b|zira|samantha|allison|victoria|susan|karen|moira|tessa|serena|kate|fiona|female|google us english|google uk english female/i;
+  const male=/david|mark|guy|alex|fred|daniel|george|james|male\b|ryan|eric|roger|christopher|steffan|thomas|rishi|aaron|google uk english male/i;
+  const us=en.filter(v=>/^en[-_]US/i.test(v.lang));
+  const pool=us.length?us:en;
+  VOICE=pool.find(v=>female.test(v.name)&&!male.test(v.name))||pool.find(v=>!male.test(v.name))||pool[0]||null;
+}
+try{pickVoice();speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(e){}
+function say(t,rate=.85){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';if(VOICE)u.voice=VOICE;u.rate=rate;u.pitch=1.2;speechSynthesis.speak(u);}catch(e){}}
 const store={get:()=>{try{return JSON.parse(localStorage.getItem('phonics')||'{}')}catch(e){return{}}},set:o=>{try{localStorage.setItem('phonics',JSON.stringify(o))}catch(e){}}};
 function totalStars(){return Object.values(store.get()).reduce((a,b)=>a+b,0)}
 function updStars(){$('#stars').textContent=totalStars()}
@@ -266,10 +290,10 @@ function hl(word,pat){
 /* ---------- view ---------- */
 function onc(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (0.299*r+0.587*g+0.114*b)>165?'#1B2447':'#fff'}
 const LNAME={a:'ay',b:'bee',c:'see',d:'dee',e:'ee',f:'eff',g:'jee',h:'aitch',i:'eye',j:'jay',k:'kay',l:'ell',m:'em',n:'en',o:'oh',p:'pee',q:'cue',r:'are',s:'ess',t:'tee',u:'you',v:'vee',w:'double you',x:'ex',y:'why',z:'zee'};
-const isLetterGroup=it=>/^[A-Z][a-z]$/.test(it.p);
+const isLetterGroup=it=>/^[A-Z][a-z]$/.test(it.p)||!!it.clip;
 const letterAudio={};let curAudio=null;
 function playLetter(it){
-  const c=it.p[0].toLowerCase();
+  const c=it.clip||it.p[0].toLowerCase();
   try{speechSynthesis.cancel()}catch(e){}
   if(curAudio){curAudio.pause();curAudio.currentTime=0}
   const a=letterAudio[c]||(letterAudio[c]=new Audio(`audio/${c}.mp3`));
@@ -303,7 +327,7 @@ function build(){
           ${isLetterGroup(it)?`<button class="btn fill" data-letter="${ui}:${ii}">${SPK}Hear letters</button>`:`<button class="btn fill" data-hear="${ui}:${ii}">${SPK}Hear letters</button>`}
           <button class="btn" data-quiz="${ui}:${ii}">Quiz</button>
           ${it.ext?`<a class="btn" href="${it.ext}" target="_blank" rel="noopener">${SPK}Hear the sound</a>`:''}
-          ${it.video?`<a class="btn" href="https://www.youtube.com/shorts/${it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks video</a>`:''}
+          ${(it.vurl||it.video)?`<a class="btn" href="${it.vurl||'https://www.youtube.com/shorts/'+it.video}" target="_blank" rel="noopener">${PLAY}Alphablocks video</a>`:''}
         </div>
       </div>
       <div class="words">${it.words.map(w=>`<button class="w" data-w="${w}"><span class="e">${pic(w)}</span><span class="t">${hl(w,it.p)}</span></button>`).join('')}</div>
